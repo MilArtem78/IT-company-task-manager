@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -10,7 +11,8 @@ from task_manager.forms import (
     WorkerSearchForm,
     WorkerCreationForm,
     WorkerUpdateForm,
-
+    TaskForm,
+    TaskSearchForm,
 )
 from task_manager.models import Task, Worker, Position, TaskType
 
@@ -152,3 +154,54 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("task_manager:worker-list")
+
+
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+    paginate_by = 4
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TaskListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = TaskSearchForm(
+            initial={"name": name}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = Task.objects.all()
+        form = TaskSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(name__icontains=form.cleaned_data["name"])
+        return queryset
+
+
+class TaskDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Task
+
+
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Task
+    form_class = TaskForm
+
+
+class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Task
+    form_class = TaskForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:task-detail", args=[self.object.pk])
+
+
+class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Task
+    success_url = reverse_lazy("task_manager:task-list")
+
+
+def toggle_assign_to_task(request: HttpRequest, pk: int)-> HttpResponse:
+    task = Task.objects.get(pk=pk)
+    if request.user in task.assignees.all():
+        task.assignees.remove(request.user)
+    else:
+        task.assignees.add(request.user)
+    return HttpResponseRedirect(task.get_absolute_url())
