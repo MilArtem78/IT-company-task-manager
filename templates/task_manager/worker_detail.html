@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Username: {{ worker.username }}
+    <a href="{% url "task_manager:worker-delete" pk=worker.id %}" class="btn btn-danger link-to-page">
+      Delete
+    </a>
+
+    <a href="{% url "task_manager:worker-update" pk=worker.id %}" class="btn btn-secondary link-to-page">
+      Update
+    </a>
+  </h1>
+
+  <p><strong>Full name:</strong> {{ worker.first_name }} {{ worker.last_name }}</p>
+  <p><strong>Position:</strong> {{ worker.position }}</p>
+
+  <div class="ml-3">
+    <h4>Tasks:</h4>
+    <br>
+    <h5>Not completed tasks:</h5>
+    {% for task in worker.assigned_tasks.all %}
+      {% if not task.is_completed %}
+        <p><strong>Name:</strong> {{ task.name }}</p>
+        <p><strong>Deadline:</strong> {{ task.deadline|date:"d-M-Y" }}</p>
+        <p><strong>Priority:</strong> {{ task.priority }}</p>
+        <p><strong>Description:</strong> {{ task.description }}</p>
+        <hr>
+      {% endif %}
+    {% endfor %}
+    <br>
+    <h5>Completed tasks:</h5>
+    {% for task in worker.assigned_tasks.all %}
+      {% if task.is_completed %}
+        <p><strong>Name:</strong> {{ task.name }}</p>
+        <p><strong>Deadline:</strong> {{ task.deadline|date:"d-M-Y" }}</p>
+        <p><strong>Priority:</strong> {{ task.priority }}</p>
+        <p><strong>Description:</strong> {{ task.description }}</p>
+        <hr>
+      {% endif %}
+    {% empty %}
+      <p>No tasks!</p>
+    {% endfor %}
+  </div>
+{% endblock %}
