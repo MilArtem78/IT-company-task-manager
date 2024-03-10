@@ -12,23 +12,20 @@
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
-
+<!DOCTYPE html>
+<html lang="en">
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
-
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <title>
-    IT Manager - {% block title %}{% endblock %}
-  </title>
-
-  <!-- Favicon -->
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
 
+  <title>
+    IT Manager - {% block title %}{% endblock %}
+  </title>
+
+  <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
   <!-- Nucleo Icons -->
   <link href="{% static 'css/nucleo-icons.css' %}" rel="stylesheet"/>
@@ -40,23 +37,17 @@
   <link id="pagestyle" href="{% static 'css/soft-ui-dashboard.css' %}" rel="stylesheet"/>
   <link id="pagestyle_dark" href="{% static 'css/dark-theme-core.css' %}" rel="stylesheet"/>
 
-  {% block extrahead %}{% endblock extrahead %}
-  {% block extrastyle %}{% endblock extrastyle %}
+  <!-- Specific CSS goes HERE -->
+  {% block stylesheets %}{% endblock stylesheets %}
 
 </head>
-<body class="g-sidenav-show bg-gray-100">
+<body class="">
 
-{% include "includes/sidebar.html" %}
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-  {% include "includes/navigation.html" %}
-  {% block content %}{% endblock %}
-  {% include "includes/pagination.html" %}
-  {% include "includes/footer.html" %}
-</main>
+{% block content %}{% endblock content %}
 
-<!--   Core JS Files   -->
-{% include 'includes/scripts.html' %}
+{% include "includes/scripts.html" %}
 
+<!-- Specific JS goes HERE -->
 {% block scripts %}{% endblock scripts %}
 
 <script>
@@ -73,9 +64,6 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{% static 'js/soft-ui-dashboard.min.js' %}"></script>
-<script src="{% static 'js/scripts.js' %}"></script>
-
-{% block extrascript %}{% endblock extrascript %}
 
 </body>
 </html>
