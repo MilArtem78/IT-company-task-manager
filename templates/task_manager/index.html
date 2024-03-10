@@ -1,19 +1,75 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-    <h1>IT manager Home</h1>
-    <p>Welcome to Best IT manager Ever!</p>
-    <h2>Dynamic content</h2>
-    <p>The IT manager has the following record counts:</p>
-    <ul>
-        <li><strong>Workers:</strong> {{ num_workers }}</li>
-        <li><strong>All tasks:</strong> {{ num_tasks }}</li>
-        <li><strong>Completed tasks:</strong> {{ num_completed_tasks }}</li>
-        <li><strong>Positions:</strong> {{ num_position }}</li>
-    </ul>
+  <div class="container py-1">
+    <h2 class="mb-3 text-center">Welcome to Best IT Manager Ever!</h2>
+    <h4 class="mb-3 text-center">The IT Manager has the following record counts:</h4>
+    <div class="row mb-6">
+      <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-text text-center">All workers:</p>
+            <h3 class="card-title text-center">{% if num_workers %}{{ num_workers }}{% else %}0{% endif %}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-text text-center">All tasks:</p>
+            <h3 class="card-title text-center">{% if num_tasks %}{{ num_tasks }}{% else %}0{% endif %}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-text text-center">Completed tasks:</p>
+            <h3 class="card-title text-center">{% if num_completed_tasks %}{{ num_completed_tasks }}{% else %}0{% endif %}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-text text-center">Positions:</p>
+            <h3 class="card-title text-center">{% if num_position %}{{ num_position }}{% else %}0{% endif %}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <p>You have visited this page
-        {{ num_visits }} time{{ num_visits|pluralize }}.
-    </p>
-
-{% endblock %}
+    <div class="row">
+      <div class="col-xl-12 col-sm-12 mb-4">
+        <h5>Not completed tasks:</h5>
+        {% for task in not_completed_tasks %}
+          <a href="{% url "task_manager:task-detail" pk=task.id %}">
+            <div class="card mb-3">
+              <div class="card-body">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                     class="bi bi-arrow-up-right-circle position-absolute top-30 end-3 color-background opacity-6"
+                     viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                        d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.854 10.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"></path>
+                </svg>
+                <p class="text-sm">{{ task.deadline|date:"D, d M Y" }}</p>
+                <h5 class="card-title">{{ task.name }}</h5>
+                <p>{{ task.description|truncatewords:22 }}</p>
+                <div class="badge bg-warning mt-1">
+                  {{ task.get_priority_display }}
+                </div>
+              </div>
+            </div>
+          </a>
+        {% empty %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <p>No tasks in To Do yet</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
