@@ -22,6 +22,8 @@ def index(request):
 
     num_tasks = Task.objects.count()
     num_completed_tasks = Task.objects.filter(is_completed=True).count()
+    not_completed_tasks = Task.objects.filter(
+        is_completed=False).order_by("deadline")[:3]
     num_workers = Worker.objects.count()
     num_position = Position.objects.count()
 
@@ -33,6 +35,7 @@ def index(request):
         "num_workers": num_workers,
         "num_position": num_position,
         "num_completed_tasks": num_completed_tasks,
+        "not_completed_tasks": not_completed_tasks,
         "num_visits": num_visits + 1,
     }
 
@@ -129,13 +132,17 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         queryset = Worker.objects.all()
         form = WorkerSearchForm(self.request.GET)
         if form.is_valid():
-            return queryset.filter(username__icontains=form.cleaned_data["username"])
+            return queryset.filter(
+                username__icontains=form.cleaned_data["username"]
+            )
         return queryset
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Worker
-    queryset = Worker.objects.all().prefetch_related("assigned_tasks__task_type")
+    queryset = Worker.objects.all().prefetch_related(
+        "assigned_tasks__task_type"
+    )
 
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
@@ -148,7 +155,10 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = WorkerUpdateForm
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:worker-detail", args=[self.object.pk])
+        return reverse_lazy(
+            "task_manager:worker-detail",
+            args=[self.object.pk]
+        )
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -198,7 +208,7 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:task-list")
 
 
-def toggle_assign_to_task(request: HttpRequest, pk: int)-> HttpResponse:
+def toggle_assign_to_task(request: HttpRequest, pk: int) -> HttpResponse:
     task = Task.objects.get(pk=pk)
     if request.user in task.assignees.all():
         task.assignees.remove(request.user)
