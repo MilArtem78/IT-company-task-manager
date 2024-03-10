@@ -1,45 +1,85 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-  <h1>
-    Username: {{ worker.username }}
-    <a href="{% url "task_manager:worker-delete" pk=worker.id %}" class="btn btn-danger link-to-page">
+  <div class="container py-4">
+    <h3 class="mb-0">Full name: {{ worker.first_name }} {{ worker.last_name }}
+     <a href="{% url "task_manager:worker-update" pk=worker.id %}" class="mb-2 btn btn-primary link-to-page">
+      Update
+    </a>
+    <a href="{% url "task_manager:worker-delete" pk=worker.id %}" class="mb-2 btn btn-danger link-to-page">
       Delete
     </a>
 
-    <a href="{% url "task_manager:worker-update" pk=worker.id %}" class="btn btn-secondary link-to-page">
-      Update
-    </a>
-  </h1>
+    </h3>
 
-  <p><strong>Full name:</strong> {{ worker.first_name }} {{ worker.last_name }}</p>
-  <p><strong>Position:</strong> {{ worker.position }}</p>
+    <h5 class="mb-0">Username: {{ worker.username }}</h5>
+    <h5 class="mb-5">Position: {{ worker.position }}</h5>
 
-  <div class="ml-3">
-    <h4>Tasks:</h4>
-    <br>
-    <h5>Not completed tasks:</h5>
-    {% for task in worker.assigned_tasks.all %}
-      {% if not task.is_completed %}
-        <p><strong>Name:</strong> {{ task.name }}</p>
-        <p><strong>Deadline:</strong> {{ task.deadline|date:"d-M-Y" }}</p>
-        <p><strong>Priority:</strong> {{ task.priority }}</p>
-        <p><strong>Description:</strong> {{ task.description }}</p>
-        <hr>
-      {% endif %}
-    {% endfor %}
-    <br>
-    <h5>Completed tasks:</h5>
-    {% for task in worker.assigned_tasks.all %}
-      {% if task.is_completed %}
-        <p><strong>Name:</strong> {{ task.name }}</p>
-        <p><strong>Deadline:</strong> {{ task.deadline|date:"d-M-Y" }}</p>
-        <p><strong>Priority:</strong> {{ task.priority }}</p>
-        <p><strong>Description:</strong> {{ task.description }}</p>
-        <hr>
-      {% endif %}
-    {% empty %}
-      <p>No tasks!</p>
-    {% endfor %}
+    <div class="row">
+      <div class="col-xl-6 col-sm-6 mb-4">
+        <h5>Not completed tasks:</h5>
+        {% for task in worker.assigned_tasks.all %}
+          {% if not task.is_completed %}
+            <a href="{% url "task_manager:task-detail" pk=task.id %}">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                       class="bi bi-arrow-up-right-circle position-absolute top-30 end-3 color-background opacity-6"
+                       viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.854 10.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"></path>
+                  </svg>
+                  <p class="text-sm">{{ task.deadline|date:"D, d M Y" }}</p>
+                  <h5 class="card-title">{{ task.name }}</h5>
+                  <p>{{ task.description|truncatewords:15 }}</p>
+                  <div class="badge bg-warning mt-1">
+                    {{ task.get_priority_display }}
+                  </div>
+                </div>
+              </div>
+            </a>
+          {% endif %}
+        {% empty %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <p>No tasks in Not completed tasks</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-xl-6 col-sm-6 mb-4">
+        <h5>Completed tasks:</h5>
+        {% for task in worker.assigned_tasks.all %}
+          {% if task.is_completed %}
+            <a href="{% url "task_manager:task-detail" pk=task.id %}">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                       class="bi bi-arrow-up-right-circle position-absolute top-30 end-3 color-background opacity-6"
+                       viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.854 10.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707l-4.096 4.096z"></path>
+                  </svg>
+                  <p class="text-sm">{{ task.deadline|date:"D, d M Y" }}</p>
+                  <h5 class="card-title">{{ task.name }}</h5>
+                  <p>{{ task.description|truncatewords:15 }}</p>
+                    <div class="badge bg-warning mt-1">
+                      {{ task.get_priority_display }}
+                  </div>
+                </div>
+              </div>
+            </a>
+          {% endif %}
+        {% empty %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <p>No tasks in completed tasks</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
-{% endblock %}
+{% endblock content %}
