@@ -18,6 +18,8 @@ password: test_123_test
 
 Feel free to create new tasks, assign them to teammates.
 
+You need to create your .env file and register your variables in it. For an example, see the file sample.env
+
 
 ## Installing / Getting started
 
