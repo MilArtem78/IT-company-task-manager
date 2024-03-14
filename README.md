@@ -7,7 +7,7 @@
 
 ## Check it out
 
-[IT company task manager project deployed to Render](PASTE LINK)
+[IT company task manager project deployed to Render](https://it-company-task-manager-vd82.onrender.com/)
 
 ### User credentials for tests:
 
@@ -41,6 +41,8 @@ python manage.py runserver
 * Detailed information about a worker and their assigned tasks;
 * Admin panel for advanced managing.
 
+## DB-structure diagram:
+![DB-structure diagram](/static/img/db-diagram.png)
 
 ## Demo
 ![Task Manager main page](demo.png)
