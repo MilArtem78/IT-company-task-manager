@@ -1,2 +1,9 @@
 .idea
+.env
 venv
+db.sqlite3
+**__pycache__
+*.log
+*.pot
+*.pyc
+local_settings.py

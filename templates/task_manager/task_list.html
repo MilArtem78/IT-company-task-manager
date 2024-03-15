@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h2>
+    Task List
+      <a href="{% url "task_manager:task-create" %}" class="mx-2  mb-1 btn btn-success link-to-page">
+      Create
+    </a>
+  </h2>
+    {% include "includes/search_form.html" %}
+  <hr>
+  {% if task_list %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Deadline</th>
+        <th>Is Completed</th>
+        <th>Priority</th>
+        <th>Task Type</th>
+      </tr>
+
+      {% for task in task_list %}
+        <tr>
+          <td>
+              {{ task.id }}
+          </td>
+          <td>
+              <a href="{{ task.get_absolute_url }}">{{ task.name }}</a>
+          </td>
+          <td>
+              {{ task.deadline|date:"d-M-Y" }}
+          </td>
+          <td>
+              {{ task.is_completed|yesno:"Yes, No" }}
+          </td>
+          <td>
+              {{ task.priority }}
+          </td>
+          <td>
+              {{ task.task_type }}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  {% else %}
+      <p>There are no tasks in the manager.</p>
+  {% endif %}
+{% endblock %}
